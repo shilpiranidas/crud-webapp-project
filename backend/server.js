@@ -6,10 +6,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// PostgreSQL connection for Render
+// PostgreSQL connection using Render Environment Variables
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  user: process.env.DB_User,
+  host: process.env.DB_Host,
+  database: process.env.DB_Name,
+  password: process.env.DB_Password,
+  port: process.env.DB_Port || 5432,
+  ssl: { rejectUnauthorized: false } // required for Render PostgreSQL
+});
+
+// Root Route (Prevents “Not Found” on base URL)
+app.get('/', (req, res) => {
+  res.send('Backend API is running successfully 🎉');
 });
 
 // GET all users
@@ -47,7 +56,9 @@ app.put('/users/:id', async (req, res) => {
       'UPDATE users SET name=$1,email=$2 WHERE id=$3 RETURNING *',
       [name, email, id]
     );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -60,7 +71,9 @@ app.delete('/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('DELETE FROM users WHERE id=$1 RETURNING *', [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.json({ message: 'User deleted' });
   } catch (err) {
     console.error(err.message);
