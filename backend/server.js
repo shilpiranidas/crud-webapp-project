@@ -6,13 +6,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to PostgreSQL
+// PostgreSQL connection for Render
 const pool = new Pool({
-  user: 'your_db_user',
-  host: 'localhost',
-  database: 'crud_webapp_db',
-  password: 'your_password',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 // GET all users
