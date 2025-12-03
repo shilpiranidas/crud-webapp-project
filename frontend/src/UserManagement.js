@@ -6,7 +6,8 @@ function UserManagement() {
   const [email, setEmail] = useState('');
   const [editingId, setEditingId] = useState(null);
 
-  const API_URL = "http://localhost:5000/users";
+  // Update this URL to your deployed Render backend
+  const API_URL = "https://crud-webapp-project.onrender.com/users";
 
   // Fetch users from backend
   const fetchUsers = async () => {
@@ -83,3 +84,4 @@ function UserManagement() {
 }
 
 export default UserManagement;
+
