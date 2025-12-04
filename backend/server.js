@@ -8,13 +8,10 @@ app.use(express.json());
 
 // PostgreSQL connection using Render Environment Variables
 const pool = new Pool({
-  user: process.env.DB_User,
-  host: process.env.DB_Host,
-  database: process.env.DB_Name,
-  password: process.env.DB_Password,
-  port: process.env.DB_Port || 5432,
-  ssl: { rejectUnauthorized: false } // required for Render PostgreSQL
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // required for Render Postgres
 });
+
 
 // Root Route (Prevents “Not Found” on base URL)
 app.get('/', (req, res) => {
